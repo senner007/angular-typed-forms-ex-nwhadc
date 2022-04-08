@@ -3,7 +3,12 @@
 // To run the app, wait for all dependencies to install, then run `ng serve`.
 
 import { Component } from "@angular/core";
-import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+} from "@angular/forms";
 
 @Component({
   selector: "profile",
@@ -23,8 +28,26 @@ export class ProfileComponent {
     }),
   });
 
+  partyForm: TPartyForm = new FormGroup({
+    address: new FormGroup({
+      house: new FormControl(1234),
+      street: new FormControl("Powell St"),
+    }),
+    formal: new FormControl(false),
+    foodOptions: new FormArray<FormControl<string | null>[]>([
+      new FormControl<string | null>("White Russian"),
+    ]),
+  });
+
+  person = new FormGroup<PersonWithFormControl>({
+    name: new FormControl("1234 Powell St"),
+    age: new FormControl(42),
+    location: new FormControl("CA"),
+  })
+
   populate() {
     this.profileForm.controls.age.patchValue(5);
+    this.partyForm.controls.address.controls.house;
   }
 }
 
@@ -41,5 +64,25 @@ interface IAddress {
   city: FormControl<string | null>;
   state: FormControl<string | null>;
   zip: FormControl<string | null>;
-
 }
+
+type TPartyForm = FormGroup<{
+  address: FormGroup<{
+    house: FormControl<number | null>;
+    street: FormControl<string | null>;
+  }>;
+  formal: FormControl<boolean | null>;
+  foodOptions: FormArray<FormControl<string | null>[]>;
+}>;
+
+interface Person {
+  name: string;
+  age: number;
+  location: string;
+}
+
+type TypeToFormControl<T> = {
+  [P in keyof T]: FormControl<T[P] | null>;
+}
+
+type PersonWithFormControl = TypeToFormControl<Person>;
