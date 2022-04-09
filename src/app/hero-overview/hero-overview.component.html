@@ -1,0 +1,15 @@
+<form *ngIf="formGroup" [formGroup]="formGroup">
+    <h2>Profile</h2>
+  
+    <label for="first-name">First Name: </label>
+    <input id="first-name" type="text" formControlName="firstName" />
+  
+    <label for="last-name">Last Name: </label>
+    <input id="last-name" type="text" formControlName="lastName" />
+  
+    <label for="age">Age: </label>
+    <input id="age" type="number" formControlName="age" />
+  </form>
+
+<h2>Single-slot content projection</h2>
+<ng-content></ng-content>

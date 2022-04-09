@@ -1,31 +1,8 @@
-<form [formGroup]="profileForm">
-  <h2>Profile</h2>
 
-  <button (click)="createPerson()">Create Person!</button>
+<app-hero-overview [formGroup]="profileForm">
+  <app-hero-detail [formGroup]="profileForm.controls.address"></app-hero-detail>
+</app-hero-overview>
 
-  <label for="first-name">First Name: </label>
-  <input id="first-name" type="text" formControlName="firstName" />
-
-  <label for="last-name">Last Name: </label>
-  <input id="last-name" type="text" formControlName="lastName" />
-
-  <label for="age">Age: </label>
-  <input id="age" type="number" formControlName="age" />
-
-  <div formGroupName="address">
-    <label for="street">Street: </label>
-    <input id="street" type="text" formControlName="street" />
-
-    <label for="city">City: </label>
-    <input id="city" type="text" formControlName="city" />
-
-    <label for="state">State: </label>
-    <input id="state" type="text" formControlName="state" />
-
-    <label for="zip">Zip Code: </label>
-    <input id="zip" type="text" formControlName="zip" />
-  </div>
-</form>
 
 <form [formGroup]="person"  *ngIf="person">
   <h2>Person</h2>
@@ -40,7 +17,6 @@
   <input id="location" type="text" formControlName="location" />
 
 </form>
-
 
 <div *ngIf="person && person.controls.name.invalid && (person.dirty || person.touched)"
     class="alert alert-danger">

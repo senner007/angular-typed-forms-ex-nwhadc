@@ -30,6 +30,7 @@ export class ProfileComponent implements OnInit {
     }),
   });
 
+
   getPersonGroup() : FormGroup<PersonToFormControl>{
     return new FormGroup<PersonToFormControl>({
       name: new FormControl('bob', [
@@ -52,9 +53,6 @@ export class ProfileComponent implements OnInit {
   person?: FormGroup<PersonToFormControl>;
 
   ngOnInit() {
-    this.profileForm.valueChanges.subscribe(value => {
-      console.log(value)
-    });
   }
 
   createPerson() {
@@ -75,6 +73,7 @@ interface IUser {
 }
 
 interface IAddress {
+  [key: string]: AbstractControl<any, any>;
   street: FormControl<string | null>;
   city: FormControl<string | null>;
   state: FormControl<string | null>;
