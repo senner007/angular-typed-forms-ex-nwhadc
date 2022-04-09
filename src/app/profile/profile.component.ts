@@ -2,12 +2,14 @@
 // Alter the class and methods below to use the new forms package.
 // To run the app, wait for all dependencies to install, then run `ng serve`.
 
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import {
   AbstractControl,
-  FormArray,
   FormControl,
   FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
 } from "@angular/forms";
 
 @Component({
@@ -15,7 +17,7 @@ import {
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.css"],
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnInit {
   profileForm = new FormGroup<IUser>({
     firstName: new FormControl("John"),
     lastName: new FormControl("Doe"),
@@ -28,26 +30,39 @@ export class ProfileComponent {
     }),
   });
 
-  partyForm: TPartyForm = new FormGroup({
-    address: new FormGroup({
-      house: new FormControl(1234),
-      street: new FormControl("Powell St"),
-    }),
-    formal: new FormControl(false),
-    foodOptions: new FormArray<FormControl<string | null>[]>([
-      new FormControl<string | null>("White Russian"),
-    ]),
-  });
+  getPersonGroup() : FormGroup<PersonToFormControl>{
+    return new FormGroup<PersonToFormControl>({
+      name: new FormControl('bob', [
+        Validators.required,
+        Validators.minLength(4),
+        this.forbiddenNameValidator(/bob/i) // <-- Here's how you pass in the custom validator.
+      ]),
+      age: new FormControl(5),
+      location: new FormControl("Earth"),
+    })
+  }
 
-  person = new FormGroup<PersonWithFormControl>({
-    name: new FormControl("1234 Powell St"),
-    age: new FormControl(42),
-    location: new FormControl("CA"),
-  })
+  forbiddenNameValidator(nameRe: RegExp): ValidatorFn {
+    return (control): ValidationErrors | null => {
+      const forbidden = nameRe.test(control.value);
+      return forbidden ? {forbiddenName: {value: control.value}} : null;
+    };
+  }
 
-  populate() {
-    this.profileForm.controls.age.patchValue(5);
-    this.partyForm.controls.address.controls.house;
+  person?: FormGroup<PersonToFormControl>;
+
+  ngOnInit() {
+    this.profileForm.valueChanges.subscribe(value => {
+      console.log(value)
+    });
+  }
+
+  createPerson() {
+    this.person = this.getPersonGroup(); 
+    this.person.valueChanges.subscribe(value => {
+      console.log(this.person)
+    });
+    this.person.markAsDirty();
   }
 }
 
@@ -66,15 +81,6 @@ interface IAddress {
   zip: FormControl<string | null>;
 }
 
-type TPartyForm = FormGroup<{
-  address: FormGroup<{
-    house: FormControl<number | null>;
-    street: FormControl<string | null>;
-  }>;
-  formal: FormControl<boolean | null>;
-  foodOptions: FormArray<FormControl<string | null>[]>;
-}>;
-
 interface Person {
   name: string;
   age: number;
@@ -83,6 +89,6 @@ interface Person {
 
 type TypeToFormControl<T> = {
   [P in keyof T]: FormControl<T[P] | null>;
-}
+};
 
-type PersonWithFormControl = TypeToFormControl<Person>;
+type PersonToFormControl = TypeToFormControl<Person>;
