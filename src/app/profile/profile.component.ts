@@ -3,14 +3,6 @@
 // To run the app, wait for all dependencies to install, then run `ng serve`.
 
 import { Component, OnInit } from "@angular/core";
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from "@angular/forms";
 
 @Component({
   selector: "profile",
